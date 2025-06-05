@@ -415,18 +415,18 @@ class PregnancyDashboard {
     getHeatmapColor(intensity) {
         if (intensity === 0) return '#f8f9fa';
         
-        // Create a gradient from light blue to dark blue/purple
+        // Create a gradient from light red to dark red for high pregnancy cases
         const colors = [
-            '#e3f2fd', // Very light blue
-            '#bbdefb', // Light blue  
-            '#90caf9', // Medium light blue
-            '#64b5f6', // Medium blue
-            '#42a5f5', // Medium dark blue
-            '#2196f3', // Blue
-            '#1e88e5', // Dark blue
-            '#1976d2', // Darker blue
-            '#1565c0', // Very dark blue
-            '#0d47a1'  // Navy blue
+            '#ffebee', // Very light red
+            '#ffcdd2', // Light red  
+            '#ef9a9a', // Medium light red
+            '#e57373', // Medium red
+            '#ef5350', // Medium dark red
+            '#f44336', // Red
+            '#e53935', // Dark red
+            '#d32f2f', // Darker red
+            '#c62828', // Very dark red
+            '#b71c1c'  // Deep red
         ];
         
         const index = Math.min(Math.floor(intensity * colors.length), colors.length - 1);

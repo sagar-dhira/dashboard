@@ -42,15 +42,15 @@
     <div class="container-fluid dashboard-content">
         
         <!-- Top Stats Cards -->
-        <div class="row mb-4">
-            <div class="col-6">
-                <div class="stat-card">
+        <div class="row mb-4 g-3">
+            <div class="col-12 col-sm-6">
+                <div class="stat-card h-100">
                     <div class="stat-label">Total Mothers</div>
                     <div class="stat-value" id="totalMothers">Loading...</div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="stat-card">
+            <div class="col-12 col-sm-6">
+                <div class="stat-card h-100">
                     <div class="stat-label">Pregnancy Count</div>
                     <div class="stat-value" id="pregnancyCount">Loading...</div>
                 </div>
@@ -68,6 +68,16 @@
             <div class="section-title">Weekly trend of HRP cases</div>
             <div class="chart-container">
                 <canvas id="weeklyTrendChart"></canvas>
+            </div>
+        </div>
+
+        <div class="section-card mb-4">
+            <div class="section-title">
+                Distribution of High-Risk Pregnancy Cases
+                <br><span class="subtitle">by village and risk category</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="distributionChart"></canvas>
             </div>
         </div>
 
@@ -104,13 +114,13 @@
         <!-- Active Workforce Category -->
         <div class="section-card mb-4">
             <div class="section-title">Active Workforce Category</div>
-            <div class="row">
-                <div class="col-6">
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
                     <div class="chart-container">
                         <canvas id="workforceChart"></canvas>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-md-6">
                     <div class="legend-container">
                         <div class="legend-item">
                             <span class="legend-color bg-primary"></span>
@@ -129,21 +139,24 @@
             </div>
         </div>
 
+        <!-- Distribution Heatmap - Moved here for better mobile layout -->
+        
+
         <!-- Active Pregnancies Section -->
-        <div class="row mb-4">
-            <div class="col-6">
-                <div class="section-card">
+        <div class="row mb-4 g-3">
+            <div class="col-12 col-lg-6">
+                <div class="section-card h-100">
                     <div class="section-title">
                         District-wise High-Risk<br>
-                        <span class="subtitle">Pregnancies by Risk<br>Category & Contributing<br>Factor</span>
+                        <span class="subtitle">Pregnancies by Risk Category & Contributing Factor</span>
                     </div>
                     <div class="chart-container">
                         <canvas id="riskCategoryChart"></canvas>
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="section-card">
+            <div class="col-12 col-lg-6">
+                <div class="section-card h-100">
                     <div class="section-title">Active Pregnancies</div>
                     <div class="chart-container">
                         <canvas id="activePregnanciesChart"></canvas>
@@ -153,19 +166,8 @@
         </div>
 
         <!-- Bottom Section -->
-        <div class="row mb-4">
-            <div class="col-6">
-                <div class="section-card">
-                    <div class="section-title">
-                        Distribution of High-Risk<br>
-                        <span class="subtitle">pregnancy cases by<br>village and risk category</span>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="distributionChart"></canvas>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6">
+        <div class="row mb-4 g-3">
+            <div class="col-12">
                 <div class="section-card">
                     <div class="section-title">
                         Active Pregnancy by<br>

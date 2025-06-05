@@ -338,7 +338,7 @@ class PregnancyDashboard {
         });
     }
 
-    // Distribution chart
+    // Distribution chart - Custom Heatmap
     async loadDistributionChart() {
         const data = await this.apiCall('/distribution/village-risk');
         if (!data || data.length === 0) {
@@ -346,50 +346,91 @@ class PregnancyDashboard {
             return;
         }
 
-        // Group data by village for display
-        const villageData = {};
-        data.forEach(item => {
-            if (!villageData[item.village]) {
-                villageData[item.village] = 0;
-            }
-            villageData[item.village] += parseInt(item.count) || 0;
-        });
+        // Get unique villages and risk categories
+        const villages = [...new Set(data.map(item => item.village))].filter(v => v).slice(0, 6);
+        const riskCategories = [...new Set(data.map(item => item.risk_category))].filter(r => r).slice(0, 5);
+        
+        // Create heatmap container
+        const chartContainer = document.getElementById('distributionChart').parentElement;
+        chartContainer.innerHTML = `
+            <div class="heatmap-container">
+                <div class="heatmap-header">
+                    <div class="heatmap-corner"></div>
+                    ${riskCategories.map(cat => `<div class="heatmap-col-header">${cat}</div>`).join('')}
+                </div>
+                <div class="heatmap-body">
+                    ${villages.map(village => {
+                        const rowData = riskCategories.map(risk => {
+                            const item = data.find(d => d.village === village && d.risk_category === risk);
+                            return item ? parseInt(item.count) || 0 : 0;
+                        });
+                        const maxValue = Math.max(...data.map(item => parseInt(item.count) || 0));
+                        
+                        return `
+                            <div class="heatmap-row">
+                                <div class="heatmap-row-header">${village}</div>
+                                ${rowData.map((value, index) => {
+                                    const intensity = maxValue > 0 ? value / maxValue : 0;
+                                    const color = this.getHeatmapColor(intensity);
+                                    return `
+                                        <div class="heatmap-cell" 
+                                             style="background-color: ${color};"
+                                             data-village="${village}"
+                                             data-risk="${riskCategories[index]}"
+                                             data-value="${value}"
+                                             title="${village} - ${riskCategories[index]}: ${value} cases">
+                                            <span class="heatmap-value">${value}</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+                <div class="heatmap-legend">
+                    <span>Low</span>
+                    <div class="legend-gradient"></div>
+                    <span>High</span>
+                </div>
+            </div>
+        `;
 
-        const villages = Object.keys(villageData).slice(0, 6);
-        const counts = villages.map(village => villageData[village]);
-
-        const ctx = document.getElementById('distributionChart').getContext('2d');
-        this.charts.distribution = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: villages,
-                datasets: [{
-                    data: counts,
-                    backgroundColor: '#007bff',
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                indexAxis: 'y',
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: {
-                        display: true,
-                        grid: { display: false },
-                        ticks: { font: { size: 9 } }
-                    },
-                    y: {
-                        display: true,
-                        grid: { display: false },
-                        ticks: { font: { size: 9 } }
-                    }
-                }
-            }
+        // Add interactive hover effects
+        document.querySelectorAll('.heatmap-cell').forEach(cell => {
+            cell.addEventListener('mouseenter', (e) => {
+                e.target.style.transform = 'scale(1.1)';
+                e.target.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+                e.target.style.zIndex = '10';
+            });
+            
+            cell.addEventListener('mouseleave', (e) => {
+                e.target.style.transform = 'scale(1)';
+                e.target.style.boxShadow = 'none';
+                e.target.style.zIndex = '1';
+            });
         });
+    }
+
+    // Helper function to generate heatmap colors
+    getHeatmapColor(intensity) {
+        if (intensity === 0) return '#f8f9fa';
+        
+        // Create a gradient from light blue to dark blue/purple
+        const colors = [
+            '#e3f2fd', // Very light blue
+            '#bbdefb', // Light blue  
+            '#90caf9', // Medium light blue
+            '#64b5f6', // Medium blue
+            '#42a5f5', // Medium dark blue
+            '#2196f3', // Blue
+            '#1e88e5', // Dark blue
+            '#1976d2', // Darker blue
+            '#1565c0', // Very dark blue
+            '#0d47a1'  // Navy blue
+        ];
+        
+        const index = Math.min(Math.floor(intensity * colors.length), colors.length - 1);
+        return colors[index];
     }
 
     // Active district chart
